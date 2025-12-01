@@ -52,3 +52,14 @@ func main() {
 	}
 	fmt.Printf("Password is: %d\n", password)
 }
+
+/*
+This code is easy to understand and the functionality
+is easy to debug. It would lend itself well to driving an animated display of the solution.
+
+It is not efficient though. I tried to write an efficient solution but did not get the correct
+answer with it. An efficient solution would aplly all of the increments in each step in one go
+but this is difficult for backwards steps involving negative values and multiple rotations.
+
+Have to consider starting from 0 and multiple rotations in either direction.
+/*
