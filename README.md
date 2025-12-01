@@ -1,4 +1,4 @@
-# Avent of Code 2025 Solutions
+# Advent of Code 2025 Solutions
 
 Here are my solutions to the programming challenge problems in [Advent of Code 2025](https://adventofcode.com/2025).
 
