@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	file, err := os.Open("input") // Load the input data from a file called "input"
+	file, err := os.Open("input")
 	if err != nil {
 		panic(err)
 	}
@@ -30,36 +30,41 @@ func main() {
 		}
 
 		if str[0] == 'L' {
-			for range clicks {
-				num -= 1
-				if num == 0 {
-					password += 1
+			/*
+				for range clicks {
+					num -= 1
+					if num == 0 {
+						password += 1
+					}
+					if num == -1 {
+						num = 99
+					}
 				}
-				if num == -1 {
-					num = 99
-				}
+			*/
+			num_loops := 0
+			if num > 0 && clicks >= num {
+				num_loops++
 			}
+			num -= clicks
+			num_loops -= num / 100
+			num = (100 + num%100) % 100
+			password += num_loops
 		} else {
-			for range clicks {
-				num += 1
-				if num == 100 {
-					password += 1
-					num = 0
+			/*
+				for range clicks {
+					num += 1
+					if num == 100 {
+						password += 1
+						num = 0
+					}
 				}
-			}
+			*/
+			num += clicks
+			num_loops := num / 100
+			num %= 100
+			password += num_loops
 		}
 		//fmt.Println(num)
 	}
 	fmt.Printf("Password is: %d\n", password)
 }
-
-/*
-This code is easy to understand and the functionality
-is easy to debug. It would lend itself well to driving an animated display of the solution.
-
-It is not efficient though. I tried to write an efficient solution but did not get the correct
-answer with it. An efficient solution would apply all of the increments in each step in one go,
-but this is difficult for backwards steps involving negative values and multiple rotations.
-
-Have to consider starting from 0 and multiple rotations in either direction.
-/*
