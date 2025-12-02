@@ -8,7 +8,7 @@ I am only posting the main code files in whatever programming language that I ma
 
 ### Day 1
 
-I tried hard to solve part 2 with modulo arithmetic etc. but ended up iterating over each click. I couldn't get the negative rotations to evaluate correctly.
+It was a challenge to evaluate the negative rotations correctly.
 
 ### Day 2
 
