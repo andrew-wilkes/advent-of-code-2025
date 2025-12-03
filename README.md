@@ -24,6 +24,8 @@ My solution involved shifting chunks of digits (as integers) to the right and co
 
 To solve this I scanned the digits from after the previous largest digit up to the position from the end of the start of the remaining number of digits. Always looking to capture the largest digit and its position.
 
+To make this code more efficient I could have pre-proceesed the bank data into arrays of integers rather than dealing with the strings.
+
 ## Programming languages used
 
 This year I should maybe try to code the solutions in a variety of different programming languages to re-kindle my knowledge of them and to learn some new ones.
