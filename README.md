@@ -20,6 +20,10 @@ Another interesting method (but seems very inefficient) is to generate repeating
 
 My solution involved shifting chunks of digits (as integers) to the right and comparing them starting with a cut through the middle. I think that this may be the most efficient way to do it algorithmically.
 
+### Day 3
+
+To solve this I scanned the digits from after the previous largest digit up to the position from the end of the start of the remaining number of digits. Always looking to capture the largest digit and its position.
+
 ## Programming languages used
 
 This year I should maybe try to code the solutions in a variety of different programming languages to re-kindle my knowledge of them and to learn some new ones.
