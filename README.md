@@ -25,3 +25,11 @@ My solution involved shifting chunks of digits (as integers) to the right and co
 To solve this I scanned the digits from after the previous largest digit up to the position from the end of the start of the remaining number of digits. Always looking to capture the largest digit and its position.
 
 To make this code more efficient I could have pre-processed the bank data into arrays of integers rather than dealing with the strings.
+
+### Day 4
+
+I refactored my code for part 2 to create a 2D integer slice to store the input data. This allowed for the use of constants which I called EMPTY, ROLL_TO_GO, and ROLL to indicate the state of each position.
+
+My solution involved a function to count and mark the rolls that could be removed, and a function to remove the rolls. Then call them in a loop until no more rolls could be removed.
+
+
