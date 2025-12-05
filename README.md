@@ -32,4 +32,6 @@ I refactored my code for part 2 to create a 2D integer slice to store the input 
 
 My solution involved a function to count and mark the rolls that could be removed, and a function to remove the rolls. Then call them in a loop until no more rolls could be removed.
 
+### Day 5
 
+Part 2 involved sorting the ranges in ascending order of the starting ID numbers. Then the ranges were merged to combine overlapping ranges. Then sum up the total of the IDs.
