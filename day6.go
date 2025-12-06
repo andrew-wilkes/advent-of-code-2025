@@ -101,7 +101,7 @@ func main() {
 			idx--
 			cstr := ""
 			for _, num := range cols[col] {
-				chr := num.txt[idx : idx+1]
+				chr := num.txt[idx : idx+1] // There is maybe a better way to extract a chr from a string here such as casting a byte value to a rune rune(num.txt[idx]) ?
 				if chr != " " {
 					cstr = cstr + chr
 				}
