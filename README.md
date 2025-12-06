@@ -35,3 +35,7 @@ My solution involved a function to count and mark the rolls that could be remove
 ### Day 5
 
 Part 2 involved sorting the ranges in ascending order of the starting ID numbers. Then the ranges were merged to combine overlapping ranges. Then sum up the total of the IDs.
+
+### Day 6
+
+This had challenges involving string manipulation and converting to numbers.
