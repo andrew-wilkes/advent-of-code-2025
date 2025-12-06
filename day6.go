@@ -10,7 +10,7 @@ import (
 
 type num_aligned struct {
 	n             int
-	txt           string
+	txt           []rune
 	right_aligned bool
 }
 
@@ -63,7 +63,7 @@ func main() {
 		// Try to detect right alignment where a space prefixes the digits
 		for col, width := range col_widths {
 			sub_str := line[idx : idx+width]
-			cols[col][row].txt = sub_str // Need this for part 2.
+			cols[col][row].txt = []rune(sub_str) // Need this for part 2. Convert the string to a slice of runes so that we can index.
 			if strings.HasPrefix(sub_str, " ") {
 				for idx := range cols[col] {
 					cols[col][idx].right_aligned = true // Didn't actually need this data.
@@ -101,9 +101,9 @@ func main() {
 			idx--
 			cstr := ""
 			for _, num := range cols[col] {
-				chr := num.txt[idx : idx+1] // There is maybe a better way to extract a chr from a string here such as casting a byte value to a rune rune(num.txt[idx]) ?
-				if chr != " " {
-					cstr = cstr + chr
+				chr := num.txt[idx] // Using runes for the text chrs
+				if chr != ' ' {
+					cstr = cstr + string(chr)
 				}
 			}
 			n, _ := strconv.Atoi(cstr)
