@@ -52,7 +52,7 @@ For this, I created a Pair type and assigned an ID to each pair of vectors. This
 
 ### Day 9
 
-Part 1 was easy involving maximizing the area of rectangles, but part 2 is hard where we need to consider points within a polygon. I think that I know how to solve it though.
+Part 1 was easy for me involving maximizing the area of rectangles, but part 2 is hard for me where we need to consider points within a polygon. I think that I know how to solve it though and fleshed out some code that needs further testing.
 
 ### Day 10
 
