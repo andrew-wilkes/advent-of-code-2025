@@ -44,7 +44,17 @@ This had challenges involving string manipulation and converting to numbers.
 
 I created an adjacency list for the nodes (splitters) by stepping the beams down the rows and splitting the beams as they hit a splitter. For part 2 I implemented a simple DF (Depth First) graph traversal using a stack but it seemed to never complete with the given input data. I will need to revisit this puzzle at a later date.
 
+My method is too slow for Part 2, but I found a tip from the Reddit chat to use Memoization where the number of beams are stored at each split point. My method is probably doing the same work multiple times.
+
 ### Day 8
 
 For this, I created a Pair type and assigned an ID to each pair of vectors. This allowed for easy debugging where the IDs were in order of the distance between the vectors. The circuits were then comprised of lists of IDs where each ID may only be in one of the circuits as the pairs are added.
+
+### Day 9
+
+Part 1 was easy involving maximizing the area of rectangles, but part 2 is hard where we need to consider points within a polygon. I think that I know how to solve it though.
+
+### Day 10
+
+I just had fun implenting the data parser so far.
 
