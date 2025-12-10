@@ -30,7 +30,7 @@ func main() {
 		panic(err)
 	}
 	defer file.Close()
-	var junction_boxes [][]vec3
+	var junction_boxes []vec3
 	scanner := bufio.NewScanner(file)
 	id := 0
 	for scanner.Scan() {
@@ -39,7 +39,7 @@ func main() {
 		x, _ := strconv.Atoi(digits[0])
 		y, _ := strconv.Atoi(digits[1])
 		z, _ := strconv.Atoi(digits[2])
-		junction_boxes = append(junction_boxes, []vec3{{x, y, z, id}})
+		junction_boxes = append(junction_boxes, vec3{x, y, z, id})
 		id++
 	}
 
@@ -51,9 +51,9 @@ func main() {
 	// Get distances between each pair of vertices
 	var pairs []pair
 	for i := 0; i < num_junction_boxes-1; i++ {
-		v1 := junction_boxes[i][0]
+		v1 := junction_boxes[i]
 		for j := i + 1; j < num_junction_boxes; j++ {
-			v2 := junction_boxes[j][0]
+			v2 := junction_boxes[j]
 			pairs = append(pairs, pair{v1: i, v2: j, dist: dsquared(v1, v2)})
 		}
 	}
