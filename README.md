@@ -39,3 +39,12 @@ Part 2 involved sorting the ranges in ascending order of the starting ID numbers
 ### Day 6
 
 This had challenges involving string manipulation and converting to numbers.
+
+### Day 7
+
+I created an adjacency list for the nodes (splitters) by stepping the beams down the rows and splitting the beams as they hit a splitter. For part 2 I implemented a simple DF (Depth First) graph traversal using a stack but it seemed to never complete with the given input data. I will need to revisit this puzzle at a later date.
+
+### Day 8
+
+For this, I created a Pair type and assigned an ID to each pair of vectors. This allowed for easy debugging where the IDs were in order of the distance between the vectors. The circuits were then comprised of lists of IDs where each ID may only be in one of the circuits as the pairs are added.
+
