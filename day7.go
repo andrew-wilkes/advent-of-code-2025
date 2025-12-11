@@ -41,14 +41,13 @@ func main() {
 		}
 		beams = new_beams
 		row += 2
-		if row == num_rows {
-			for _, weight := range beams {
-				timeline_count += weight
-			}
-		}
 	}
 
 	fmt.Printf("Part 1. Number of splits = %d\n", num_splits)
+
+	for _, weight := range beams {
+		timeline_count += weight
+	}
 
 	fmt.Printf("Part 2. Number of timelines = %d\n", timeline_count)
 }
