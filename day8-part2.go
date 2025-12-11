@@ -48,7 +48,7 @@ func main() {
 
 	// Get distances between each pair of vertices
 	var pairs []pair
-	for i := 0; i < num_junction_boxes-1; i++ {
+	for i := range num_junction_boxes-1 {
 		v1 := junction_boxes[i]
 		for j := i + 1; j < num_junction_boxes; j++ {
 			v2 := junction_boxes[j]
