@@ -42,9 +42,7 @@ This had challenges involving string manipulation and converting to numbers.
 
 ### Day 7
 
-I created an adjacency list for the nodes (splitters) by stepping the beams down the rows and splitting the beams as they hit a splitter. For part 2 I implemented a simple DF (Depth First) graph traversal using a stack but it seemed to never complete with the given input data. I will need to revisit this puzzle at a later date.
-
-My method is too slow for Part 2, but I found a tip from the Reddit chat to use Memoization where the number of beams are stored at each split point. My method is probably doing the same work multiple times.
+To solve this I added a weight to the beams that gets distributed at each split to the 2 new beams or added to existing beams in the same position. Then add up the weights at the end.
 
 ### Day 8
 
