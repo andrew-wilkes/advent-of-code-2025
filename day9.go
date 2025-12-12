@@ -57,26 +57,23 @@ func main() {
 	}
 	fmt.Printf("Part 1 max area = %d\n", max_area)
 
-	// Part 2 - WIP
+	// Part 2
 
 	// The vertices form a closed path containing the green tiles.
 	// Rectangles formed by 2 vertices have 2 other corners that must be on or inside the closed path.
 
-	// Vertices should be in counterclockwise order for use of my function to test isInsidePolygon
-	slices.Reverse(vertices)
-
 	vertices = append(vertices, vertices[0])
 
+	// Loop finding the max area rectangle that has not already been rejected
 	rejected_rects := []vertex{}
 	for {
-		max_area := 0
+		max_area = 0
 		var max_ids vertex
 		var v1, v2 vertex
-		// Get the max area up to the ceiling
 		for i := range len(vertices) - 1 {
 			for j := i + 1; j < len(vertices); j++ {
-				max_ids = vertex{i, j}
-				if slices.Contains(rejected_rects, max_ids) {
+				current_ids := vertex{i, j}
+				if slices.Contains(rejected_rects, current_ids) {
 					continue
 				}
 				a := RectArea(vertices[i], vertices[j])
@@ -84,6 +81,7 @@ func main() {
 					max_area = a
 					v1 = vertices[i]
 					v2 = vertices[j]
+					max_ids = current_ids
 				}
 			}
 		}
@@ -106,7 +104,7 @@ func main() {
 			}
 		}
 		if !ok {
-			continue
+			goto end // Goto :)
 		}
 		// Bottom
 		if v2.x > v1.x {
@@ -125,7 +123,7 @@ func main() {
 			}
 		}
 		if !ok {
-			continue
+			goto end
 		}
 		// Left
 		if v2.y > v1.y {
@@ -144,7 +142,7 @@ func main() {
 			}
 		}
 		if !ok {
-			continue
+			goto end
 		}
 		// Right
 		if v2.y > v1.y {
@@ -162,6 +160,7 @@ func main() {
 				}
 			}
 		}
+	end:
 		if ok {
 			fmt.Printf("Part2 max area = %d\n", max_area)
 			break
@@ -171,11 +170,23 @@ func main() {
 	}
 }
 
+// Want to count how many time the point cuts though an edge vertically.
+// But if it sits on a top edge then get the wrong result.
 func isInsidePolygon(verts []vertex, p vertex) bool {
+	n := 0
 	for i := range len(verts) - 1 {
-		if TriArea(p, verts[i], verts[i+1]) < 0 {
-			return false
+		a := verts[i]
+		b := verts[i+1]
+		if a.y == b.y { // Horizontal line
+			if a.x > b.x {
+				a = b
+				b = verts[i]
+			}
+			if p.y < a.y && p.x >= a.x && p.x <= b.x {
+				// Line is below p
+				n++
+			}
 		}
 	}
-	return true
+	return n%2 != 0
 }
