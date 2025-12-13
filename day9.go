@@ -1,5 +1,7 @@
 package main
 
+// This code works with the example data but part 2 takes too long to run with the input data
+
 import (
 	"bufio"
 	"fmt"
@@ -24,13 +26,8 @@ func RectArea(a, b vertex) int {
 	return (AbsInt(b.x-a.x) + 1) * (AbsInt(b.y-a.y) + 1)
 }
 
-func TriArea(a, b, c vertex) int {
-	// Not /2 since only interested in the sign
-	return (b.x-a.x)*(c.y-a.y) - (c.x-a.x)*(b.y-a.y)
-}
-
 func main() {
-	file, err := os.Open("test")
+	file, err := os.Open("input")
 	if err != nil {
 		panic(err)
 	}
@@ -104,18 +101,18 @@ func main() {
 			}
 		}
 		if !ok {
-			goto end // Goto :)
+			goto end
 		}
 		// Bottom
 		if v2.x > v1.x {
-			for x := v1.x + 1; x <= v2.x; x++ {
+			for x := v1.x; x < v2.x; x++ {
 				if !isInsidePolygon(vertices, vertex{x, v2.y}) {
 					ok = false
 					break
 				}
 			}
 		} else {
-			for x := v2.x; x < v1.x; x++ {
+			for x := v2.x + 1; x <= v1.x; x++ {
 				if !isInsidePolygon(vertices, vertex{x, v2.y}) {
 					ok = false
 					break
@@ -146,14 +143,14 @@ func main() {
 		}
 		// Right
 		if v2.y > v1.y {
-			for y := v1.y + 1; y <= v2.y; y++ {
+			for y := v1.y; y < v2.y; y++ {
 				if !isInsidePolygon(vertices, vertex{v2.x, y}) {
 					ok = false
 					break
 				}
 			}
 		} else {
-			for y := v2.y; y < v1.y; y++ {
+			for y := v2.y + 1; y <= v1.y; y++ {
 				if !isInsidePolygon(vertices, vertex{v2.x, y}) {
 					ok = false
 					break
@@ -162,7 +159,8 @@ func main() {
 		}
 	end:
 		if ok {
-			fmt.Printf("Part2 max area = %d\n", max_area)
+			fmt.Println(v1, v2)
+			fmt.Printf("Part 2 max area = %d\n", max_area)
 			break
 		} else {
 			rejected_rects = append(rejected_rects, max_ids)
@@ -170,10 +168,14 @@ func main() {
 	}
 }
 
-// Want to count how many time the point cuts though an edge vertically.
-// But if it sits on a top edge then get the wrong result.
+// Want to count how many times the point cuts though an edge vertically.
+// If the point sits on a an edge then it is inside or
+// if there is an odd number of traversals of edges up or down, then the point is inside.
 func isInsidePolygon(verts []vertex, p vertex) bool {
 	n := 0
+	m := 0
+	on_edge := false
+	last_x := -1
 	for i := range len(verts) - 1 {
 		a := verts[i]
 		b := verts[i+1]
@@ -182,11 +184,24 @@ func isInsidePolygon(verts []vertex, p vertex) bool {
 				a = b
 				b = verts[i]
 			}
-			if p.y < a.y && p.x >= a.x && p.x <= b.x {
-				// Line is below p
-				n++
+			if a.x != last_x && p.x >= a.x && p.x <= b.x {
+				if p.y < a.y {
+					n++
+				}
+				if p.y == a.y {
+					on_edge = true
+					break
+				}
+				if p.y > a.y {
+					m++
+				}
 			}
+			last_x = b.x
 		}
 	}
+	return on_edge || is_odd(n) || is_odd(m)
+}
+
+func is_odd(n int) bool {
 	return n%2 != 0
 }
