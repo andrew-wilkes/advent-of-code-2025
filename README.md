@@ -58,3 +58,5 @@ Got an idea to write code that creates rectangles from opposing corners and test
 
 I developed a solution that works for Part 1 and the test data (part1 and 2) but is too inefficient to solve Part 2 with my input data. I guess that it uses too much memory.
 
+My next plan here is to not do a breadth first search that generates a ton of combinations but go for a depth first search. Then quickly abandon the depth when a value gets too large for a particular joltage.
+
