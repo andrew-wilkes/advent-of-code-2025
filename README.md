@@ -52,7 +52,9 @@ For this, I created a Pair type and assigned an ID to each pair of vectors. This
 
 I can't seem to get part 2 to work with my input data. I think that I will study [this article](https://alienryderflex.com/polygon/) to get some ideas.
 
+Got an idea to write code that creates rectangles from opposing corners and tests for any nodes inside the rectangle. The rectangle should not enclose any edge pieces.
+
 ### Day 10
 
-I just had fun implenting the data parser so far.
+I developed a solution that works for Part 1 and the test data (part1 and 2) but is too inefficient to solve Part 2 with my input data. I guess that it uses too much memory.
 
