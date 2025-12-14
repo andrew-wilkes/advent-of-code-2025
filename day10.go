@@ -1,9 +1,11 @@
-package main
+package main // This code is too inefficient for part 2 with my input data
 
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -13,6 +15,13 @@ type button []int
 type machine struct {
 	lights   []bool
 	buttons  []button
+	joltages []int
+}
+
+// Binary encoded machine
+type bmachine struct {
+	lights   int
+	buttons  []int
 	joltages []int
 }
 
@@ -55,5 +64,110 @@ func main() {
 		}
 		machines = append(machines, m)
 	}
-	fmt.Println(machines)
+
+	// Binary encode the machines for ease of toggling values
+	var bms []bmachine
+
+	for _, m := range machines {
+		bm := bmachine{}
+		n := 1
+		for _, d := range m.lights {
+			if d {
+				bm.lights += n
+			}
+			n *= 2
+		}
+		for _, b := range m.buttons {
+			button := 0
+			for _, n := range b {
+				button += int(math.Pow(2, float64(n)))
+			}
+			bm.buttons = append(bm.buttons, button)
+		}
+		bms = append(bms, bm)
+	}
+	// Want the least number of button presses to set the lights correctly
+	total := 0
+	for _, m := range bms {
+		count := apply_buttons(m.lights, m.buttons)
+		total += count
+	}
+
+	fmt.Printf("Part 1 total = %d\n", total)
+
+	// Part 2
+	total = 0
+	for _, m := range machines {
+		total += set_jolts(m.joltages, m.buttons)
+	}
+	fmt.Printf("Part 2 total = %d\n", total)
+}
+
+func apply_buttons(target int, buttons []int) int {
+	stack := make([]int, len(buttons))
+	copy(stack, buttons) // Initial values after 1 press of the buttons
+	count := 1
+	if slices.Contains(stack, target) {
+		return count
+	}
+	for {
+		count++
+		results := []int{}
+		for _, v := range stack {
+			for j := range len(buttons) {
+				result := v ^ buttons[j]
+				if result == target {
+					return count
+				}
+				results = append(results, result)
+			}
+		}
+		stack = make([]int, len(results))
+		copy(stack, results)
+	}
+}
+
+func set_jolts(joltages []int, buttons []button) int {
+	// Sort buttons in decreasing order of impactfulness
+	slices.SortFunc(buttons, func(a, b button) int {
+		return len(b) - len(a)
+	})
+	stack := make([][]int, len(buttons))
+	for i, b := range buttons {
+		jolts := make([]int, len(joltages))
+		for _, idx := range b {
+			jolts[idx] = 1
+		}
+		stack[i] = jolts
+	}
+	count := 1
+	if count > 10000 {
+		return count
+	}
+	for {
+		count++
+		results := [][]int{}
+		for _, jolts := range stack {
+			for j := range len(buttons) {
+				result := make([]int, len(joltages))
+				copy(result, jolts)
+				ok := true
+				for _, idx := range buttons[j] {
+					result[idx]++
+					if result[idx] > joltages[idx] {
+						ok = false
+						break
+					}
+				}
+				if ok {
+					if slices.Equal(result, joltages) {
+						return count
+					}
+					results = append(results, result)
+				}
+			}
+		}
+		stack = make([][]int, len(results))
+		copy(stack, results)
+	}
 }
