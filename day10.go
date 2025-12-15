@@ -158,7 +158,7 @@ func set_jolts(joltages []int, buttons []button) int {
 			if slices.Equal(joltages, jolts) {
 				if count < min_count {
 					min_count = count
-					found = true
+					found = true // Mistake! Move it below the lower bracket.
 				}
 			}
 			for i := range jolts {
