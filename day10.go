@@ -1,4 +1,4 @@
-package main // This code is too inefficient for part 2 with my input data
+package main // Part 2 code takes too many iterations to complete with my input data
 
 import (
 	"bufio"
@@ -25,8 +25,12 @@ type bmachine struct {
 	joltages []int
 }
 
+type counter struct {
+	value int
+}
+
 func main() {
-	file, err := os.Open("test")
+	file, err := os.Open("input")
 	if err != nil {
 		panic(err)
 	}
@@ -128,6 +132,47 @@ func apply_buttons(target int, buttons []int) int {
 }
 
 func set_jolts(joltages []int, buttons []button) int {
+	jolts := make([]int, len(joltages))
+	min_count := 99999999
+	found := false
+	for n := 10; n < 100; n += 10 { // Maximum number of presses per button
+		fmt.Println("N: ", n)
+		span := 1
+		for range buttons {
+			span *= n
+		}
+		for x := range span {
+			count := 0
+		button_loop:
+			for _, b := range buttons {
+				presses := x % n
+				count += presses
+				for _, idx := range b {
+					jolts[idx] += presses
+					if jolts[idx] > joltages[idx] {
+						break button_loop
+					}
+				}
+				x /= n
+			}
+			if slices.Equal(joltages, jolts) {
+				if count < min_count {
+					min_count = count
+					found = true
+				}
+			}
+			for i := range jolts {
+				jolts[i] = 0
+			}
+		}
+		if found {
+			break
+		}
+	}
+	return min_count
+}
+
+func set_jolts2(joltages []int, buttons []button) int {
 	// Sort buttons in decreasing order of impactfulness
 	slices.SortFunc(buttons, func(a, b button) int {
 		return len(b) - len(a)
