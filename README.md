@@ -60,3 +60,8 @@ I developed a solution that works for Part 1 and the test data (part1 and 2) but
 
 My next plan here is to not do a breadth first search that generates a ton of combinations but go for a depth first search. Then quickly abandon the depth when a value gets too large for a particular joltage.
 
+My latest idea was to step though ranges of button presses such as 10, 20 ... For each range, create a span number of range value raised to the power of the number of buttons.
+
+This allows for simple looping over the combinations of button applications by something like bit shifting using modulo arithmetic to get the number of presses for each button. Please see my code to see what I mean.
+
+But this was still too inefficient to complete part 2 with my input data, so I conclude that I need some kind of algorithm that I am unaware of to solve it quickly. There are maybe billions of combinations.
