@@ -134,85 +134,47 @@ func apply_buttons(target int, buttons []int) int {
 func set_jolts(joltages []int, buttons []button) int {
 	jolts := make([]int, len(joltages))
 	min_count := 99999999
-	found := false
-	for n := 10; n < 100; n += 10 { // Maximum number of presses per button
-		fmt.Println("N: ", n)
-		span := 1
-		for range buttons {
-			span *= n
-		}
-		for x := range span {
-			count := 0
-		button_loop:
-			for _, b := range buttons {
-				presses := x % n
-				count += presses
-				for _, idx := range b {
-					jolts[idx] += presses
-					if jolts[idx] > joltages[idx] {
-						break button_loop
-					}
-				}
-				x /= n
-			}
-			if slices.Equal(joltages, jolts) {
-				if count < min_count {
-					min_count = count
-					found = true // Mistake! Move it below the lower bracket.
+	// Find maximum number of allowable presses per button
+	maxp := make([]int, len(buttons))
+	for idx, b := range buttons {
+		for i, j := range b {
+			mp := joltages[j] + 1 // Add 1 since will use with % operator later
+			if i == 0 {
+				maxp[idx] = mp
+			} else {
+				if maxp[idx] > mp {
+					maxp[idx] = mp
 				}
 			}
-			for i := range jolts {
-				jolts[i] = 0
+		}
+	}
+	span := 1
+	for _, mp := range maxp {
+		span *= mp
+	}
+	for n := range span {
+		count := 0
+		pn := n
+	button_loop:
+		for i, b := range buttons {
+			presses := pn % maxp[i]
+			pn /= maxp[i]
+			count += presses
+			for _, idx := range b {
+				jolts[idx] += presses
+				if jolts[idx] > joltages[idx] {
+					break button_loop
+				}
 			}
 		}
-		if found {
-			break
+		if slices.Equal(joltages, jolts) {
+			if count < min_count {
+				min_count = count
+			}
+		}
+		for i := range jolts {
+			jolts[i] = 0
 		}
 	}
 	return min_count
-}
-
-func set_jolts2(joltages []int, buttons []button) int {
-	// Sort buttons in decreasing order of impactfulness
-	slices.SortFunc(buttons, func(a, b button) int {
-		return len(b) - len(a)
-	})
-	stack := make([][]int, len(buttons))
-	for i, b := range buttons {
-		jolts := make([]int, len(joltages))
-		for _, idx := range b {
-			jolts[idx] = 1
-		}
-		stack[i] = jolts
-	}
-	count := 1
-	if count > 10000 {
-		return count
-	}
-	for {
-		count++
-		results := [][]int{}
-		for _, jolts := range stack {
-			for j := range len(buttons) {
-				result := make([]int, len(joltages))
-				copy(result, jolts)
-				ok := true
-				for _, idx := range buttons[j] {
-					result[idx]++
-					if result[idx] > joltages[idx] {
-						ok = false
-						break
-					}
-				}
-				if ok {
-					if slices.Equal(result, joltages) {
-						return count
-					}
-					results = append(results, result)
-				}
-			}
-		}
-		stack = make([][]int, len(results))
-		copy(stack, results)
-	}
 }
