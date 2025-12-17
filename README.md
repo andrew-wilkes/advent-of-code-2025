@@ -50,9 +50,15 @@ For this, I created a Pair type and assigned an ID to each pair of vectors. This
 
 ### Day 9
 
-I can't seem to get part 2 to work with my input data. I think that I will study [this article](https://alienryderflex.com/polygon/) to get some ideas.
+For part 2 I wrote code to sort the possible rectangles in descending order of area. Then test points around the perimiter of the rectangle to see if they are 
+inside the path of the vertices or on the path.
 
-Got an idea to write code that creates rectangles from opposing corners and tests for any nodes inside the rectangle. The rectangle should not enclose any edge pieces.
+[This article](https://alienryderflex.com/polygon/) had a good algorithm for testing if a point is inside a polygon.
+
+The edges of the path are either vertical or horizontal, so it is straightforward to test points that are on an edge. But points that are not on an edge need
+testing to see if they are inside the outer path.
+
+Evaluating all of the rectangles seemed to take a long time so I skipped testing some of the largest rectangles. For example, you could start from a percentage of the maximum rectangle area.
 
 ### Day 10
 
