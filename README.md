@@ -66,3 +66,13 @@ I developed a solution that works for Part 1 and the test data (part1 and 2) but
 
 My approach to optimise the solution is to find the maximum number of presses for each button to individually hit one of the joltages. Then loop over the ranges of presses of each button. If any of the buttons cause the joltage to be exceeded then the current combination of button presses is skipped.
 
+## Day 11
+
+This seems like a fairly easy problem to solve but my solution is too slow for Part 2. Possibly, by converting the strings to integers, it will be much faster.
+
+## Day 12
+
+I started writing code to map the 5 shapes to matrices representing all of the rotations and flips but then thought that this will end up with a lot of combinations and a very hard puzzle to solve.
+
+So it may be better to pre-combine the shapes manually into rectangular areas. I don't feel the motivation to write code to fit the pieces together like jigsaw pieces. The problem may be more
+like stacking boxes into a bigger box.
