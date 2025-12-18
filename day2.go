@@ -16,9 +16,8 @@ func main() {
 	}
 
 	ranges := string(contentBytes)
-	p1_sum := 0
-	p2_sum := 0
-	for _, id_range := range strings.Split(ranges, ",") {
+	p1_sum, p2_sum := 0, 0
+	for id_range := range strings.SplitSeq(ranges, ",") {
 		num_pair := strings.Split(id_range, "-")
 		start_id, _ := strconv.Atoi(num_pair[0])
 		end_id, _ := strconv.Atoi(num_pair[1])
@@ -45,7 +44,7 @@ func main() {
 					var last_chunk int
 					div := int(math.Pow10(ndigits))
 					invalid := true
-					for j := 0; j < steps; j++ {
+					for j := range steps {
 						new_chunk := number % div
 						number /= div
 						if j > 0 && last_chunk != new_chunk {
@@ -59,7 +58,7 @@ func main() {
 						break
 					}
 				}
-				ndigits -= 1
+				ndigits--
 			}
 		}
 	}
