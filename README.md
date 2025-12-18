@@ -74,6 +74,8 @@ I enjoyed implementing various DFS and BFS algorithms to try to solve this. I di
 
 Also, I converted the string data to integers to hopefully speed things up but make debugging harder.
 
+One idea that I didn't try is to implement a bi-directional BFS. This could dramatically reduce the time taken to converge on a solution. Also, the split between traversing from the start or from the end could be optimized depending on the size of each queue.
+
 ## Day 12
 
 I started writing code to map the 5 shapes to matrices representing all of the rotations and flips but then thought that this will end up with a lot of combinations and a very hard puzzle to solve.
