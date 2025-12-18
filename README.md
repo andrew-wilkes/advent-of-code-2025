@@ -70,6 +70,10 @@ My approach to optimise the solution is to find the maximum number of presses fo
 
 This seems like a fairly easy problem to solve but my solution is too slow for Part 2. Possibly, by converting the strings to integers, it will be much faster.
 
+I enjoyed implementing various DFS and BFS algorithms to try to solve this. I discovered a neat way to implement a queue in Go. Also, it was good practice to add state to the "device" object in the BFS to capture the DAC and FFT status.
+
+Also, I converted the string data to integers to hopefully speed things up but make debugging harder.
+
 ## Day 12
 
 I started writing code to map the 5 shapes to matrices representing all of the rotations and flips but then thought that this will end up with a lot of combinations and a very hard puzzle to solve.
