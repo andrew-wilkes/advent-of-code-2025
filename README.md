@@ -76,3 +76,9 @@ I started writing code to map the 5 shapes to matrices representing all of the r
 
 So it may be better to pre-combine the shapes manually into rectangular areas. I don't feel the motivation to write code to fit the pieces together like jigsaw pieces. The problem may be more
 like stacking boxes into a bigger box.
+
+## Conclusion
+
+I finished the challenge with 20 stars after putting some serious effort into it. Now I will go out and find solutions that other people have come up with to see what I can learn. And maybe I will implement some of those ideas with golang for fun.
+
+Some of the challenges end up having very large combinations if you take a naive approach to solving them, so we need to discover the tricks/algorithms to solve them efficiently.
