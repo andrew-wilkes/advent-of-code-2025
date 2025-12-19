@@ -14,7 +14,7 @@ type device struct {
 }
 
 func main() {
-	file, err := os.Open("input")
+	file, err := os.Open("test2")
 	if err != nil {
 		panic(err)
 	}
@@ -48,7 +48,7 @@ func main() {
 	fmt.Printf("Part 1 number of paths = %d\n", n)
 
 	//n = propagate2("svr", strs, []string{}, 0, false, false)
-	n = propagate_bfs2(device{id: keys["svr"]}, devices, keys["out"], keys["dac"], keys["fft"])
+	n = bidirectional_bfs(device{id: keys["svr"]}, devices, keys["out"], keys["dac"], keys["fft"])
 	fmt.Printf("Part 2 number of paths = %d\n", n)
 
 }
@@ -109,6 +109,100 @@ func propagate_bfs2(from device, devices [][]device, target, dac, fft int) int {
 			for i := idx; i < len(queue); i++ {
 				queue[i].dac = node.dac
 				queue[i].fft = node.fft
+			}
+		}
+	}
+	return n
+}
+
+// Needs debugging
+func bidirectional_bfs(from device, devices [][]device, target, dac, fft int) int {
+	// Form the reverse path list
+	d2 := make([][]device, len(devices))
+	for n := range len(d2) {
+		src := []device{}
+		for i := range len(d2) {
+			for _, d := range devices[i] {
+				if d.id == n {
+					src = append(src, device{id: i})
+				}
+			}
+		}
+		d2[n] = src
+	}
+	n := 0
+	qa := []device{from}
+	qb := []device{{id: target}}
+	for len(qa) > 0 && len(qb) > 0 {
+		if len(qb) > len(qa) {
+			node := qa[0]
+			qa = qa[1:]
+			if node.id < 0 {
+				continue // Ignore it
+			}
+			i := slices.IndexFunc(qb, func(dev device) bool {
+				return node.id == dev.id
+			})
+			if i > -1 {
+				// Mark node in qb as finished with
+				qb[i].id = -1
+				if (node.dac || qb[i].dac) && (node.fft || qb[i].fft) {
+					n++
+				}
+				continue // Skip further processing of this node
+			}
+			switch node.id {
+			case target:
+				if node.dac && node.fft {
+					n++
+				}
+			case dac:
+				node.dac = true
+			case fft:
+				node.fft = true
+			}
+			idx := len(qa)
+			qa = append(qa, devices[node.id]...)
+			if node.dac || node.fft {
+				for i := idx; i < len(qa); i++ {
+					qa[i].dac = node.dac
+					qa[i].fft = node.fft
+				}
+			}
+		} else {
+			node := qb[0]
+			qb = qb[1:]
+			if node.id < 0 {
+				continue // Ignore it
+			}
+			i := slices.IndexFunc(qa, func(dev device) bool {
+				return node.id == dev.id
+			})
+			if i > -1 {
+				// Mark node in qa as finished with
+				qa[i].id = -1
+				if (node.dac || qa[i].dac) && (node.fft || qa[i].fft) {
+					n++
+				}
+				continue // Skip further processing of this node
+			}
+			switch node.id {
+			case target:
+				if node.dac && node.fft {
+					n++
+				}
+			case dac:
+				node.dac = true
+			case fft:
+				node.fft = true
+			}
+			idx := len(qb)
+			qb = append(qb, devices[node.id]...)
+			if node.dac || node.fft {
+				for i := idx; i < len(qb); i++ {
+					qb[i].dac = node.dac
+					qb[i].fft = node.fft
+				}
 			}
 		}
 	}
