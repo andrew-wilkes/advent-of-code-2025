@@ -1,4 +1,4 @@
-package main
+package main // I tried out lots of ideas for part 2 but ultimately failed to solve it.
 
 import (
 	"bufio"
@@ -20,22 +20,20 @@ func main() {
 	}
 	defer file.Close()
 	strs := map[string][]string{}
+	keys := map[string]int{}
+	ki := 0
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
 		items := strings.Split(line, ": ")
 		strs[items[0]] = strings.Split(items[1], " ")
-	}
-	strs["out"] = []string{}
-
-	// Convert strings to ints
-	devices := make([][]device, len(strs))
-	keys := map[string]int{}
-	ki := 0
-	for key, _ := range strs {
-		keys[key] = ki
+		keys[items[0]] = ki
 		ki++
 	}
+	strs["out"] = []string{}
+	keys["out"] = ki
+
+	devices := make([][]device, len(strs))
 	for k, v := range strs {
 		dests := make([]device, len(v))
 		for i, d := range v {
@@ -115,7 +113,6 @@ func propagate_bfs2(from device, devices [][]device, target, dac, fft int) int {
 	return n
 }
 
-// Needs debugging
 func bidirectional_bfs(from device, devices [][]device, target, dac, fft int) int {
 	// Form the reverse path list
 	d2 := make([][]device, len(devices))
@@ -140,22 +137,26 @@ func bidirectional_bfs(from device, devices [][]device, target, dac, fft int) in
 			if node.id < 0 {
 				continue // Ignore it
 			}
-			i := slices.IndexFunc(qb, func(dev device) bool {
-				return node.id == dev.id
-			})
+			i := slices.Index(qb, node)
 			if i > -1 {
-				// Mark node in qb as finished with
-				qb[i].id = -1
 				if (node.dac || qb[i].dac) && (node.fft || qb[i].fft) {
 					n++
+					qb = slices.Delete(qb, i, i+1)
+					continue
 				}
-				continue // Skip further processing of this node
+				if (node.dac == qb[i].dac) && (node.fft == qb[i].fft) {
+					// Remove matching node from qb
+					qb = slices.Delete(qb, i, i+1)
+					continue // Skip further processing of this node
+				}
+				if !(qb[i].dac || qb[i].fft) {
+					qa = slices.Delete(qb, i, i+1)
+				}
+				if !(node.dac || node.fft) {
+					continue
+				}
 			}
 			switch node.id {
-			case target:
-				if node.dac && node.fft {
-					n++
-				}
 			case dac:
 				node.dac = true
 			case fft:
@@ -176,28 +177,34 @@ func bidirectional_bfs(from device, devices [][]device, target, dac, fft int) in
 				continue // Ignore it
 			}
 			i := slices.IndexFunc(qa, func(dev device) bool {
-				return node.id == dev.id
+				return dev.id == node.id
 			})
 			if i > -1 {
-				// Mark node in qa as finished with
-				qa[i].id = -1
 				if (node.dac || qa[i].dac) && (node.fft || qa[i].fft) {
 					n++
+					qa = slices.Delete(qa, i, i+1)
+					continue
 				}
-				continue // Skip further processing of this node
+				if (node.dac == qa[i].dac) && (node.fft == qa[i].fft) {
+					// Remove matching node from qa
+					qa = slices.Delete(qa, i, i+1)
+					continue // Skip further processing of this node
+				}
+				if !(qa[i].dac || qa[i].fft) {
+					qa = slices.Delete(qa, i, i+1)
+				}
+				if !(node.dac || node.fft) {
+					continue
+				}
 			}
 			switch node.id {
-			case target:
-				if node.dac && node.fft {
-					n++
-				}
 			case dac:
 				node.dac = true
 			case fft:
 				node.fft = true
 			}
 			idx := len(qb)
-			qb = append(qb, devices[node.id]...)
+			qb = append(qb, d2[node.id]...)
 			if node.dac || node.fft {
 				for i := idx; i < len(qb); i++ {
 					qb[i].dac = node.dac
