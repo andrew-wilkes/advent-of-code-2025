@@ -1,4 +1,4 @@
-package main // Part 2 code takes too many iterations to complete with my input data
+package main
 
 import (
 	"bufio"
@@ -93,7 +93,8 @@ func main() {
 	// Want the least number of button presses to set the lights correctly
 	total := 0
 	for _, m := range bms {
-		count := apply_buttons(m.lights, m.buttons)
+		//count := bfs(m.lights, m.buttons)
+		count := optimal_parity(m.lights, m.buttons)
 		total += count
 	}
 
@@ -102,33 +103,144 @@ func main() {
 	// Part 2
 	total = 0
 	for _, m := range machines {
-		total += set_jolts(m.joltages, m.buttons)
+		total += apply_buttons_to_get_joltage(m.joltages, m.buttons)
 	}
 	fmt.Printf("Part 2 total = %d\n", total)
 }
 
-func apply_buttons(target int, buttons []int) int {
+func bfs(target int, buttons []int) int {
 	stack := make([]int, len(buttons))
-	copy(stack, buttons) // Initial values after 1 press of the buttons
-	count := 1
-	if slices.Contains(stack, target) {
-		return count
-	}
+	count := 0
 	for {
 		count++
 		results := []int{}
 		for _, v := range stack {
-			for j := range len(buttons) {
-				result := v ^ buttons[j]
+			for _, b := range buttons {
+				result := v ^ b
 				if result == target {
 					return count
 				}
-				results = append(results, result)
+				if !slices.Contains(results, result) {
+					results = append(results, result)
+				}
 			}
 		}
 		stack = make([]int, len(results))
 		copy(stack, results)
 	}
+}
+
+func optimal_parity(target int, buttons []int) int {
+	num_buttons := len(buttons)
+	nmin := 1000000
+	var loop func(v, bid, n int)
+	loop = func(v, bid, n int) {
+		if v == target {
+			if n < nmin {
+				nmin = n
+			}
+			return
+		}
+		if bid == num_buttons {
+			return
+		}
+		// Apply button 0 or 1 times
+		loop(v, bid+1, n)
+		loop(v^buttons[bid], bid+1, n+1)
+	}
+	loop(0, 0, 0)
+	return nmin
+}
+
+func apply_buttons_to_get_joltage(target []int, buttons []button) int {
+	stack := [][]int{}
+	for range len(buttons) {
+		stack = append(stack, make([]int, len(target)))
+	}
+	count := 0
+	for {
+		count++
+		results := [][]int{}
+		for _, v := range stack {
+			for _, b := range buttons {
+				result := make([]int, len(target))
+				copy(result, v)
+				for _, bid := range b {
+					result[bid]++
+				}
+				if slices.Equal(result, target) {
+					return count
+				}
+				if !slices.ContainsFunc(results, func(s []int) bool {
+					return slices.Equal(s, result)
+				}) {
+					results = append(results, result)
+				}
+			}
+		}
+		stack = make([][]int, len(results))
+		copy(stack, results)
+	}
+}
+
+func solve(joltages []int, buttons []button) int {
+	// https://en.wikipedia.org/wiki/Gaussian_elimination
+	// Make slice of coefficients represented as ints.
+	cfs := make([]int, len(joltages))
+	bit := 1
+	for _, b := range buttons {
+		for _, jid := range b {
+			cfs[jid] += bit
+		}
+		bit *= 2
+	}
+	// Sort into row echelon form
+	for i := range cfs {
+		cfs[i] = cfs[i]*1000 + joltages[i]
+	}
+	slices.Sort(cfs)
+	slices.Reverse(cfs)
+	for i := range cfs {
+		joltages[i] = cfs[i] % 1000
+		cfs[i] /= 1000
+	}
+
+	// Perform row reduction
+	for i := range len(cfs) - 1 {
+		a := cfs[i]
+		for j := i + 1; j < len(cfs); j++ {
+			b := cfs[j]
+			if a&b == b {
+				cfs[i] -= b
+				joltages[i] -= joltages[j]
+			}
+		}
+	}
+
+	// Find maximum number of allowable presses per button
+	maxp := make([]int, len(buttons))
+	bit = 1
+	for i := range buttons {
+		for j, cf := range cfs {
+			if cf&bit > 0 {
+				jv := joltages[j]
+				if maxp[i] == 0 {
+					maxp[i] = jv
+				} else {
+					if jv < maxp[i] {
+						maxp[i] = jv
+					}
+				}
+			}
+		}
+		bit *= 2
+	}
+
+	span := 1
+	for _, mp := range maxp {
+		span *= mp
+	}
+	return 3
 }
 
 func set_jolts(joltages []int, buttons []button) int {
