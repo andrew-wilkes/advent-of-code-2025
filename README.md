@@ -4,6 +4,8 @@ Here are my solutions to the programming challenge problems in [Advent of Code 2
 
 I am only posting the main code files in whatever programming language that I may use. And I don't expect to complete all of the challenges based on previous experience.
 
+![my progress chart](2025-12-24_20-41.png)
+
 ## Notes
 
 ### Day 1
