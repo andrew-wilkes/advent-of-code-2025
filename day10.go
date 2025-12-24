@@ -90,6 +90,8 @@ func main() {
 		}
 		bms = append(bms, bm)
 	}
+
+	// Part 1
 	// Want the least number of button presses to set the lights correctly
 	total := 0
 	for _, m := range bms {
@@ -97,7 +99,6 @@ func main() {
 		count := optimal_parity(m.lights, m.buttons)
 		total += count
 	}
-
 	fmt.Printf("Part 1 total = %d\n", total)
 
 	// Part 2
@@ -141,12 +142,11 @@ func optimal_parity(target int, buttons []int) int {
 			}
 			return
 		}
-		if bid == num_buttons {
-			return
+		if bid < num_buttons {
+			// Apply button 0 or 1 times
+			loop(v, bid+1, n)
+			loop(v^buttons[bid], bid+1, n+1)
 		}
-		// Apply button 0 or 1 times
-		loop(v, bid+1, n)
-		loop(v^buttons[bid], bid+1, n+1)
 	}
 	loop(0, 0, 0)
 	return nmin
