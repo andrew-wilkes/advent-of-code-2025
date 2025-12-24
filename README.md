@@ -60,11 +60,16 @@ testing to see if they are inside the outer path.
 
 Evaluating all of the rectangles seemed to take a long time so I skipped testing some of the largest rectangles. For example, you could start from a percentage of the maximum rectangle area.
 
+In hindsight, I found somebody else's code that just tested if the edges of rectangles were inside the path or not rather than all of the points which makes
+more sense. But at least I can now code the useful point inside a polygon solution.
+
 ### Day 10
 
 I developed a solution that works for Part 1 and the test data (part1 and 2) but is too inefficient to solve Part 2 with my input data. There are too many combinations of button presses to consider.
 
 My approach to optimise the solution is to find the maximum number of presses for each button to individually hit one of the joltages. Then loop over the ranges of presses of each button. If any of the buttons cause the joltage to be exceeded then the current combination of button presses is skipped.
+
+Now I found a tutorial on how to solve it [here](https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory/), so I am now implementing that idea.
 
 ## Day 11
 
@@ -87,6 +92,8 @@ like stacking boxes into a bigger box.
 
 ## Conclusion
 
-I finished the challenge with 20 stars after putting some serious effort into it. Now I will go out and find solutions that other people have come up with to see what I can learn. And maybe I will implement some of those ideas with golang for fun.
+I finished the challenge with 21 stars after putting some serious effort into it. Now I will go out and find solutions that other people have come up with to see what I can learn. And maybe I will implement some of those ideas with golang for fun.
 
 Some of the challenges end up having very large combinations if you take a naive approach to solving them, so we need to discover the tricks/algorithms to solve them efficiently.
+
+Edit: I am still trying to complete the challenge.
