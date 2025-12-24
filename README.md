@@ -74,7 +74,9 @@ I enjoyed implementing various DFS and BFS algorithms to try to solve this. I di
 
 Also, I converted the string data to integers to hopefully speed things up but make debugging harder.
 
-I implemented a bi-directional BFS. This should dramatically reduce the time taken to converge on a solution. Also, the split between traversing from the start or from the end was optimized depending on the size of each queue. But I must have done something wrong in my code since I didn't get the correct result with the example data despite tracing my code thoughput. Well, I gave it my best shot.
+I implemented a bi-directional BFS. This should dramatically reduce the time taken to converge on a solution. Also, the split between traversing from the start or from the end was optimized depending on the size of each queue. But I must have done something wrong in my code since I didn't get the correct result with the example data despite tracing my code thoughput.
+
+Finally solved part 2 with a DFS that includes a cache to store the count on visited nodes to prevent repeated traversals of the same nodes.
 
 ## Day 12
 
