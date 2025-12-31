@@ -87,10 +87,9 @@ Finally solved part 2 with a DFS that includes a cache to store the count on vis
 
 ## Day 12
 
-I started writing code to map the 5 shapes to matrices representing all of the rotations and flips but then thought that this will end up with a lot of combinations and a very hard puzzle to solve.
+I've published my code that generates matrix representations of the 6 shapes and their unique variants after being flipped and rotated.
 
-So it may be better to pre-combine the shapes manually into rectangular areas. I don't feel the motivation to write code to fit the pieces together like jigsaw pieces. The problem may be more
-like stacking boxes into a bigger box.
+Next I need to code a function that assembles the shapes in various combinations until the area is filled or overflows.
 
 ## Conclusion
 
