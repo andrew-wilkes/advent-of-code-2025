@@ -73,6 +73,8 @@ My approach to optimise the solution is to find the maximum number of presses fo
 
 Now I found a tutorial on how to solve it [here](https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory/), so I am now implementing that idea.
 
+So I did implement the bifurcate method and got the correct answer with the test data, but my result with the input data was too high. At this point, I'm not sure what else to do apart from carefully reviewing my code to spot any potential bug. I spent a long time working on this part 2 and had fun learning and getting more proficient at Go coding, so it wasn't a waste of time.
+
 ## Day 11
 
 This seems like a fairly easy problem to solve but my solution is too slow for Part 2. Possibly, by converting the strings to integers, it will be much faster.
