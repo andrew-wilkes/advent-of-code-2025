@@ -29,6 +29,17 @@ type counter struct {
 	value int
 }
 
+type joltCount struct {
+	jolts  []int
+	count  int
+	solved bool
+}
+
+type patternCost struct {
+	value []int
+	cost  int
+}
+
 func main() {
 	file, err := os.Open("input")
 	if err != nil {
@@ -73,7 +84,7 @@ func main() {
 	var bms []bmachine
 
 	for _, m := range machines {
-		bm := bmachine{}
+		bm := bmachine{joltages: m.joltages}
 		n := 1
 		for _, d := range m.lights {
 			if d {
@@ -93,20 +104,23 @@ func main() {
 
 	// Part 1
 	// Want the least number of button presses to set the lights correctly
-	total := 0
-	for _, m := range bms {
-		//count := bfs(m.lights, m.buttons)
-		count := optimal_parity(m.lights, m.buttons)
-		total += count
-	}
-	fmt.Printf("Part 1 total = %d\n", total)
-
+	/*
+		total := 0
+		for _, m := range bms {
+			//count := bfs(m.lights, m.buttons)
+			count := optimal_parity(m.lights, m.buttons)
+			total += count
+		}
+		fmt.Printf("Part 1 total = %d\n", total)
+	*/
 	// Part 2
-	total = 0
-	for _, m := range machines {
-		total += apply_buttons_to_get_joltage(m.joltages, m.buttons)
+	total := 0
+	for i, m := range machines {
+		total += apply_buttons_to_get_joltage(m.joltages, m.buttons, bms[i].buttons)
 	}
-	fmt.Printf("Part 2 total = %d\n", total)
+	fmt.Printf("Part 2 total = %d\n", total) // Answer of 1019649 is too high
+
+	// Have to try this idea out: https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory/
 }
 
 func bfs(target int, buttons []int) int {
@@ -152,35 +166,90 @@ func optimal_parity(target int, buttons []int) int {
 	return nmin
 }
 
-func apply_buttons_to_get_joltage(target []int, buttons []button) int {
-	stack := [][]int{}
-	for range len(buttons) {
-		stack = append(stack, make([]int, len(target)))
+func get_patternCosts(target []int, buttons []button) []patternCost {
+	patternCosts := []patternCost{}
+	num_buttons := len(buttons)
+	var loop func(value, pattern []int, bid, cost int)
+	loop = func(value, pattern []int, bid, cost int) {
+		if slices.Equal(target, pattern) {
+			patternCosts = append(patternCosts, patternCost{value: value, cost: cost})
+			return
+		}
+		if bid < num_buttons {
+			// Apply button 0 or 1 times
+			loop(value, pattern, bid+1, cost)
+			v := make([]int, len(target))
+			copy(v, value)
+			p := make([]int, len(target))
+			copy(p, pattern)
+			for _, b := range buttons[bid] {
+				v[b]++
+				p[b] ^= 1
+			}
+			loop(v, p, bid+1, cost+1)
+		}
 	}
-	count := 0
-	for {
-		count++
-		results := [][]int{}
-		for _, v := range stack {
-			for _, b := range buttons {
-				result := make([]int, len(target))
-				copy(result, v)
-				for _, bid := range b {
-					result[bid]++
+	loop(make([]int, len(target)), make([]int, len(target)), 0, 0)
+	return patternCosts
+}
+
+func apply_buttons_to_get_joltage(target []int, buttons []button, bvs []int) int {
+	parity_cache := make(map[int][]patternCost)
+	goal_cache := make(map[string]int)
+
+	var solveSingle func(goal []int) int
+	solveSingle = func(goal []int) int {
+		goalKey := fmt.Sprint(goal)
+		if val, ok := goal_cache[goalKey]; ok {
+			return val
+		}
+		allZero := true
+		for _, v := range goal {
+			if v != 0 {
+				allZero = false
+				break
+			}
+		}
+		if allZero {
+			goal_cache[goalKey] = 0
+			return 0
+		}
+		answer := 1000000
+		parityPattern := make([]int, len(goal))
+		parityKey := 0
+		for i, v := range goal {
+			parityKey *= 2
+			parityKey += (v % 2)
+			parityPattern[i] = v % 2
+		}
+		patternCosts, ok := parity_cache[parityKey]
+		if !ok {
+			patternCosts = get_patternCosts(parityPattern, buttons)
+			parity_cache[parityKey] = patternCosts
+		}
+		for _, patternCost := range patternCosts {
+			ok := true
+			for i := range len(goal) {
+				if patternCost.value[i] > goal[i] {
+					ok = false
+					break
 				}
-				if slices.Equal(result, target) {
-					return count
+			}
+			if ok {
+				newGoal := make([]int, len(goal))
+				for i := range len(goal) {
+					newGoal[i] = (goal[i] - patternCost.value[i]) / 2
 				}
-				if !slices.ContainsFunc(results, func(s []int) bool {
-					return slices.Equal(s, result)
-				}) {
-					results = append(results, result)
+				candidate := patternCost.cost + 2*solveSingle(newGoal)
+				if candidate < answer {
+					answer = candidate
 				}
 			}
 		}
-		stack = make([][]int, len(results))
-		copy(stack, results)
+		goal_cache[goalKey] = answer
+		return answer
 	}
+	return solveSingle(target)
 }
 
 func solve(joltages []int, buttons []button) int {
