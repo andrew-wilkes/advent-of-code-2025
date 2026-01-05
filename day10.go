@@ -121,6 +121,7 @@ func main() {
 	fmt.Printf("Part 2 total = %d\n", total) // Answer of 1019649 is too high
 
 	// Have to try this idea out: https://www.reddit.com/r/adventofcode/comments/1pk87hl/2025_day_10_part_2_bifurcate_your_way_to_victory/
+	// https://github.com/adrbin/aoc-go/blob/main/2025/day10/puzzle.go
 }
 
 func bfs(target int, buttons []int) int {
