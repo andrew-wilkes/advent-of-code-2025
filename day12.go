@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -16,13 +17,14 @@ type region struct {
 type shape [][][3]int // A slice of variants of the base shape
 
 func main() {
-	file, err := os.Open("test")
+	file, err := os.Open("input")
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
 	shapes := []shape{}
 	regions := []region{}
+	areas := []int{}
 	scanner := bufio.NewScanner(file)
 	line_num := 0
 	for scanner.Scan() {
@@ -32,9 +34,11 @@ func main() {
 		if block < 6 {
 			if item == 0 {
 				shapes = append(shapes, shape{[][3]int{}})
+				areas = append(areas, 0)
 			} else {
 				if item < 4 {
 					shapes[block][0] = append(shapes[block][0], unpack_shape_code(line))
+					areas[block] += strings.Count(line, "#")
 				}
 			}
 		} else {
@@ -55,7 +59,81 @@ func main() {
 	for i, sh := range shapes {
 		shapes[i] = set_shape_variants(sh)
 	}
-	fmt.Println(shapes)
+
+	// Part 1
+	// Strategy
+	// Try to fit shape as low vertically as possible.
+	// Then try to move the shape to the left.
+	// Repeat for various combinations of shapes.
+
+	// But this simple check of area works:
+
+	total := 0
+	for _, r := range regions {
+		region_area := r.width * r.length
+		min_present_area := 0
+		for i, n := range r.presents {
+			min_present_area += areas[i] * n
+		}
+		if region_area >= min_present_area {
+			total++
+		}
+	}
+	fmt.Printf("Part 1 total = %d\n", total)
+}
+
+func presentsFit(r region, shapes []shape) bool {
+	// Create grid
+	grid := make([][]bool, r.length)
+	for i := range r.length {
+		grid[i] = make([]bool, r.width)
+	}
+
+	// Generate a list of shape indices that must be placed in the grid
+	slist := []int{}
+	for i, n := range r.presents {
+		if n > 0 {
+			for range n {
+				slist = append(slist, i)
+			}
+		}
+	}
+
+	// Get permutations
+	perms := [][]int{}
+	heapPermutation(slist, len(slist), &perms)
+
+	for _, p := range perms {
+		for _, i := range p {
+			fmt.Println(i)
+		}
+	}
+
+	//var func addshape(pidx, )
+	return true
+}
+
+func heapPermutation(a []int, size int, perms *[][]int) {
+	if size == 1 {
+		if !slices.ContainsFunc(*perms, func(s []int) bool {
+			return slices.Equal(s, a)
+		}) {
+			b := make([]int, len(a))
+			copy(b, a)
+			*perms = append(*perms, b)
+		}
+	}
+	for i := range size {
+		heapPermutation(a, size-1, perms)
+		last := a[size-1]
+		if size%2 == 0 {
+			a[size-1] = a[i]
+			a[i] = last
+		} else {
+			a[size-1] = a[0]
+			a[0] = last
+		}
+	}
 }
 
 func unpack_shape_code(line string) [3]int {
